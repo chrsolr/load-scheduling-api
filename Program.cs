@@ -20,6 +20,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseResponseCompression();
 app.UseHeadersMiddleware();
+app.UseRequestBodyLimitMiddleware();
 app.UseCors();
 
 app.UseTraceIdMiddleware();
