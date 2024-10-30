@@ -9,7 +9,15 @@ public class HealthController : ControllerBase
     {
         var version = GetType().Assembly?.GetName().Version?.ToString() ?? "N/A";
         var name = GetType().Assembly?.GetName().Name?.ToString() ?? "N/A";
+        var datetime = DateTime.UtcNow;
 
-        return Ok(new { version, name });
+        return Ok(
+            new
+            {
+                version,
+                name,
+                dateTime = datetime,
+            }
+        );
     }
 }
