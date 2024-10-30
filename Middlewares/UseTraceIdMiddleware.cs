@@ -9,7 +9,9 @@ public class UseTraceIdMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
-        context.Response.Headers.Append("ls-trace-id", Guid.NewGuid().ToString());
+        string traceId = Guid.NewGuid().ToString();
+
+        context.Response.Headers.Append("LS-Trace-Id", traceId);
 
         await _next(context);
     }
