@@ -6,7 +6,8 @@
 # User-specific files
 .idea
 .env
-!.env-example
+!.env.example
+!.env.dev
 *.rsuser
 *.suo
 *.user
