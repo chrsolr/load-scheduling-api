@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LoadSchedulingAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241031033426_InitialMigrations")]
+    [Migration("20241031154612_InitialMigrations")]
     partial class InitialMigrations
     {
         /// <inheritdoc />

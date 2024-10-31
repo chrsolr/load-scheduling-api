@@ -1,0 +1,32 @@
+networks:
+  load-scheduling-api:
+    driver: bridge
+
+services:
+  web-server:
+    image: load-scheduling-api:latest
+    container_name: load-scheduling-api
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - pgsql
+    env_file:
+      - .env
+    ports:
+      - 5080:9000
+    networks:
+      - load-scheduling-api
+
+  pgsql:
+    image: "bitnami/postgresql:17.0.0"
+    container_name: pg-load-scheduling
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${DEV_POSTGRES_PORT_EXPOSED}:${POSTGRES_PORT}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

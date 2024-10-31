@@ -29,12 +29,7 @@ public class DataContext : DbContext
 
             entity
                 .Property(e => e.ConfigId)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("config_id");
-
-            entity.Property(e => e.Org).HasColumnName("org");
-            entity.Property(e => e.Market).HasColumnName("market");
-            entity.Property(e => e.Brand).HasColumnName("brand");
+                .HasDefaultValueSql("gen_random_uuid()");
 
             entity
                 .Property(e => e.IsActive)

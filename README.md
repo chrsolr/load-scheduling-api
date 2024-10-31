@@ -29,6 +29,8 @@ Dotnet version of Load Scheduling APIs
 
 `dotnet ef database remove`
 
+`dotnet ef database drop`
+
 `docker compose down && docker compose build && docker compose up -d`
 
 `docker build -t LoadSchedulingAPI .`
