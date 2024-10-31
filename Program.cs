@@ -2,9 +2,13 @@ global using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using Microsoft.OpenApi.Models;
 
+DotEnv.Load(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
+
 var builder = WebApplication.CreateBuilder(args);
 
 var Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "N/A";
+
+builder.Configuration.AddEnvironmentVariables();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -26,7 +30,9 @@ builder.Services.AddResponseCompression(options => options.EnableForHttps = true
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+bool.TryParse(Environment.GetEnvironmentVariable("SHOW_SWAGGER"), out bool showApiDocumentation);
+
+if (showApiDocumentation)
 {
     app.UseSwagger();
     app.UseSwaggerUI(config =>
