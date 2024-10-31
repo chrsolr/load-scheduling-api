@@ -1,6 +1,6 @@
-global using System.ComponentModel.DataAnnotations;
 global using System.Reflection;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 DotEnv.Load(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
@@ -16,6 +16,18 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.Limits.MaxRequestBodySize = 5 * 1024 * 1024; // 5mb
 });
+
+// builder.Services.AddDbContextPool<DataContext>(options =>
+//     options.UseNpgsql(
+//         builder.Configuration.GetConnectionString("DefaultConnection")
+//     )
+// );
+
+builder.Services.AddDbContextPool<DataContext>(options =>
+    options.UseNpgsql(
+        Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+    )
+);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -36,9 +48,14 @@ builder.Services.AddResponseCompression(options =>
     options.EnableForHttps = true
 );
 
+builder.Services.AddScoped<IOrgConfigService, OrgConfigService>();
+
 var app = builder.Build();
 
-bool.TryParse(Environment.GetEnvironmentVariable("SHOW_SWAGGER"), out bool showApiDocumentation);
+bool.TryParse(
+    Environment.GetEnvironmentVariable("SHOW_SWAGGER"),
+    out bool showApiDocumentation
+);
 
 if (showApiDocumentation)
 {
