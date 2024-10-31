@@ -1,4 +1,3 @@
-global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using System.Reflection;
@@ -19,12 +18,6 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.Limits.MaxRequestBodySize = 5 * 1024 * 1024; // 5mb
 });
-
-// builder.Services.AddDbContextPool<DataContext>(options =>
-//     options.UseNpgsql(
-//         builder.Configuration.GetConnectionString("DefaultConnection")
-//     )
-// );
 
 builder.Services.AddDbContextPool<DataContext>(options =>
     options.UseNpgsql(
@@ -75,6 +68,7 @@ if (showApiDocumentation)
 }
 
 app.UseResponseCompression();
+app.UseAuthMiddleware();
 app.UseHeadersMiddleware();
 app.UseRequestBodyLimitMiddleware();
 app.UseCors();
