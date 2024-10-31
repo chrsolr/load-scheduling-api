@@ -1,6 +1,6 @@
 global using System.Reflection;
 global using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 DotEnv.Load(Path.Combine(Directory.GetCurrentDirectory(), ".env"));
@@ -47,6 +47,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddResponseCompression(options =>
     options.EnableForHttps = true
 );
+
+builder.Services.AddScoped<IOrgConfigService, OrgConfigService>();
 
 var app = builder.Build();
 
