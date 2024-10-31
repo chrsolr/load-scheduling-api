@@ -2,11 +2,11 @@
 
 Dotnet version of Load Scheduling APIs
 
-## Needs
+## Misc
 
 - Coming soon
 
-## Commands
+### Commands
 
 `dotnet watch`
 
@@ -25,6 +25,11 @@ Dotnet version of Load Scheduling APIs
 
 `docker build -t LoadSchedulingAPI .`
 
-## ToDo's
+### ToDo's (Tech)
 
-- Coming soon
+- Okta Support
+- Postgres integration
+- Prometheus Support
+- Routes
+- Modules/Services
+- Repositories
