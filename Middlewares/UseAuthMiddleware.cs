@@ -54,10 +54,22 @@ public class UseAuthMiddleware
         }
 
         var accessToken = parts[1];
+        var token = JwtUtils.ConvertToSecurityToken(accessToken);
+        var decodedToken = JwtUtils.DecodeToken(token);
 
-        Console.WriteLine($"{nameof(accessToken)}: {accessToken}");
+        if (decodedToken == null)
+        {
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsync("Invalid Authorization Token");
+            return;
+        }
 
-        // TODO: Verify JWT HERE
+        foreach (var org in decodedToken.Organizations)
+        {
+            Console.WriteLine($"Organization: {org}");
+        }
+
+        // Console.WriteLine(JsonSerializer.Serialize(decodedToken));
 
         await _next(context);
     }
