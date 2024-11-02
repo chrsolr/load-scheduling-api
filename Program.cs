@@ -47,7 +47,9 @@ builder.Services.AddResponseCompression(options =>
     options.EnableForHttps = true
 );
 
-builder.Services.AddScoped<IConfigService, ConfigService>();
+builder
+    .Services.AddScoped<IConfigService, ConfigService>()
+    .AddScoped<ICredentialService, CredentialService>();
 
 var app = builder.Build();
 

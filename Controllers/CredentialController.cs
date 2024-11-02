@@ -1,10 +1,20 @@
 [ApiController]
 public class CredentialController : ControllerBase
 {
-    public CredentialController() { }
+    private readonly ILogger _logger;
+    private readonly ICredentialService _credentialService;
 
-    [HttpGet("/v1/org/credential")]
-    public ActionResult<dynamic> GetByOrg()
+    public CredentialController(
+        ILogger<CredentialController> logger,
+        ICredentialService credentialService
+    )
+    {
+        _logger = logger;
+        _credentialService = credentialService;
+    }
+
+    [HttpGet("/v1/org/credentials")]
+    public async Task<ActionResult<List<CredentialDTO>>> GetByOrg()
     {
         HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
 
@@ -16,8 +26,13 @@ public class CredentialController : ControllerBase
             return Unauthorized();
         }
 
-        // TODO: Get credentials dto here
+        var credentials = await _credentialService.GetByOrg(org);
 
-        return Ok(new { });
+        if (credentials is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(credentials);
     }
 }
