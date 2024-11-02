@@ -38,4 +38,7 @@ public record Config
 
     [Column("is_active")]
     public bool IsActive { get; set; } = false;
+
+    public virtual ICollection<Credential> Credentials { get; set; } =
+        new List<Credential>();
 }
