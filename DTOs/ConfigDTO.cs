@@ -1,4 +1,4 @@
-public class ConfigDTO
+public record ConfigDTO
 {
     public Guid ConfigId { get; set; }
 
