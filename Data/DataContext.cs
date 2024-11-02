@@ -3,13 +3,13 @@ public class DataContext : DbContext
     public DataContext(DbContextOptions<DataContext> options)
         : base(options) { }
 
-    public DbSet<OrgConfig> OrgConfigs => Set<OrgConfig>();
+    public DbSet<Config> Configs => Set<Config>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("uuid-ossp");
 
-        modelBuilder.Entity<OrgConfig>(entity =>
+        modelBuilder.Entity<Config>(entity =>
         {
             entity.ToTable("configs");
 

@@ -1,20 +1,20 @@
 [ApiController]
-public class OrgConfigController : ControllerBase
+public class ConfigController : ControllerBase
 {
     private readonly ILogger _logger;
-    private readonly IOrgConfigService _orgConfigService;
+    private readonly IConfigService _configService;
 
-    public OrgConfigController(
-        ILogger<OrgConfigController> logger,
-        IOrgConfigService orgConfigService
+    public ConfigController(
+        ILogger<ConfigController> logger,
+        IConfigService configService
     )
     {
         _logger = logger;
-        _orgConfigService = orgConfigService;
+        _configService = configService;
     }
 
     [HttpGet("/v1/org/configs")]
-    public async Task<ActionResult<List<OrgConfigDTO>>> GetByOrg()
+    public async Task<ActionResult<List<ConfigDTO>>> GetByOrg()
     {
         HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
 
@@ -32,7 +32,7 @@ public class OrgConfigController : ControllerBase
             return NotFound();
         }
 
-        var configs = await _orgConfigService.GetByOrg(org);
+        var configs = await _configService.GetByOrg(org);
 
         if (configs is null)
         {
@@ -43,7 +43,7 @@ public class OrgConfigController : ControllerBase
     }
 
     [HttpGet("/v1/org/configs/{configId}")]
-    public async Task<ActionResult<OrgConfigDTO>> GetByConfigId(
+    public async Task<ActionResult<ConfigDTO>> GetByConfigId(
         [FromRoute] Guid configId
     )
     {
@@ -57,7 +57,7 @@ public class OrgConfigController : ControllerBase
             return Unauthorized();
         }
 
-        var config = await _orgConfigService.GetById(configId);
+        var config = await _configService.GetById(configId);
         if (config is null)
         {
             return NotFound();
@@ -79,7 +79,7 @@ public class OrgConfigController : ControllerBase
             return Unauthorized();
         }
 
-        var activated = await _orgConfigService.ActivateById(configId);
+        var activated = await _configService.ActivateById(configId);
 
         return Ok(new { success = activated });
     }
@@ -97,7 +97,7 @@ public class OrgConfigController : ControllerBase
             return Unauthorized();
         }
 
-        var deactivated = await _orgConfigService.DeactivateById(configId);
+        var deactivated = await _configService.DeactivateById(configId);
 
         return Ok(new { success = deactivated });
     }

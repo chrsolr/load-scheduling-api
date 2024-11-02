@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LoadSchedulingAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241031154612_InitialMigrations")]
+    [Migration("20241102021800_InitialMigrations")]
     partial class InitialMigrations
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace LoadSchedulingAPI.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("OrgConfig", b =>
+            modelBuilder.Entity("Config", b =>
                 {
                     b.Property<Guid>("ConfigId")
                         .ValueGeneratedOnAdd()

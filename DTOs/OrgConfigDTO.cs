@@ -1,4 +1,4 @@
-public class OrgConfigDTO
+public class ConfigDTO
 {
     public Guid ConfigId { get; set; }
 

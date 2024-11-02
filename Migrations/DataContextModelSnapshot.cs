@@ -22,7 +22,7 @@ namespace LoadSchedulingAPI.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("OrgConfig", b =>
+            modelBuilder.Entity("Config", b =>
                 {
                     b.Property<Guid>("ConfigId")
                         .ValueGeneratedOnAdd()

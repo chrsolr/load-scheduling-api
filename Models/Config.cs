@@ -6,7 +6,7 @@
     IsUnique = true,
     Name = "configs_org_brand_market_key"
 )]
-public class OrgConfig
+public class Config
 {
     [Key]
     [Column("config_id")]

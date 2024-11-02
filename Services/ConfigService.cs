@@ -1,24 +1,24 @@
-public interface IOrgConfigService
+public interface IConfigService
 {
-    public Task<List<OrgConfigDTO>> GetAll(bool includeInactive);
-    public Task<List<OrgConfigDTO>> GetByOrg(string org);
-    public Task<OrgConfigDTO?> GetById(Guid configId);
+    public Task<List<ConfigDTO>> GetAll(bool includeInactive);
+    public Task<List<ConfigDTO>> GetByOrg(string org);
+    public Task<ConfigDTO?> GetById(Guid configId);
     public Task<bool> ActivateById(Guid configId);
     public Task<bool> DeactivateById(Guid configId);
 }
 
-public class OrgConfigService : IOrgConfigService
+public class ConfigService : IConfigService
 {
     private readonly DataContext _context;
 
-    public OrgConfigService(DataContext context)
+    public ConfigService(DataContext context)
     {
         _context = context;
     }
 
     public async Task<bool> ActivateById(Guid configId)
     {
-        var config = await _context.OrgConfigs.FirstOrDefaultAsync(c =>
+        var config = await _context.Configs.FirstOrDefaultAsync(c =>
             c.ConfigId == configId
         );
 
@@ -36,7 +36,7 @@ public class OrgConfigService : IOrgConfigService
 
     public async Task<bool> DeactivateById(Guid configId)
     {
-        var config = await _context.OrgConfigs.FirstOrDefaultAsync(c =>
+        var config = await _context.Configs.FirstOrDefaultAsync(c =>
             c.ConfigId == configId
         );
 
@@ -52,15 +52,15 @@ public class OrgConfigService : IOrgConfigService
         return true;
     }
 
-    public async Task<List<OrgConfigDTO>> GetAll(bool includeInactive = false)
+    public async Task<List<ConfigDTO>> GetAll(bool includeInactive = false)
     {
-        IQueryable<OrgConfigDTO> configs;
+        IQueryable<ConfigDTO> configs;
 
         if (includeInactive == false)
         {
             configs = _context
-                .OrgConfigs.Where(c => c.IsActive)
-                .Select(c => new OrgConfigDTO
+                .Configs.Where(c => c.IsActive)
+                .Select(c => new ConfigDTO
                 {
                     ConfigId = c.ConfigId,
                     Org = c.Org,
@@ -75,7 +75,7 @@ public class OrgConfigService : IOrgConfigService
         }
         else
         {
-            configs = _context.OrgConfigs.Select(c => new OrgConfigDTO
+            configs = _context.Configs.Select(c => new ConfigDTO
             {
                 ConfigId = c.ConfigId,
                 Org = c.Org,
@@ -92,11 +92,11 @@ public class OrgConfigService : IOrgConfigService
         return await configs.ToListAsync();
     }
 
-    public async Task<OrgConfigDTO?> GetById(Guid configId)
+    public async Task<ConfigDTO?> GetById(Guid configId)
     {
         return await _context
-            .OrgConfigs.Where(c => c.ConfigId == configId)
-            .Select(c => new OrgConfigDTO
+            .Configs.Where(c => c.ConfigId == configId)
+            .Select(c => new ConfigDTO
             {
                 ConfigId = c.ConfigId,
                 Org = c.Org,
@@ -111,11 +111,11 @@ public class OrgConfigService : IOrgConfigService
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<OrgConfigDTO>> GetByOrg(string org)
+    public async Task<List<ConfigDTO>> GetByOrg(string org)
     {
         return await _context
-            .OrgConfigs.Where(c => c.Org == org && c.IsActive)
-            .Select(c => new OrgConfigDTO
+            .Configs.Where(c => c.Org == org && c.IsActive)
+            .Select(c => new ConfigDTO
             {
                 ConfigId = c.ConfigId,
                 Org = c.Org,
