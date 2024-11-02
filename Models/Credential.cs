@@ -15,7 +15,7 @@ public record Credential
     [Column("credential_id")]
     public Guid CredentialId { get; set; }
 
-    [ForeignKey("ConfigId")]
+    [ForeignKey("config_id")]
     public Guid ConfigId { get; set; }
 
     [Column("org")]

@@ -65,8 +65,14 @@ public class DataContext : DbContext
             entity.HasKey(e => e.CredentialId).HasName("credentials_pkey");
 
             entity
+                .Property(e => e.ConfigId)
+                .HasColumnName("config_id")
+                .IsRequired();
+
+            entity
                 .Property(e => e.CredentialId)
-                .HasDefaultValueSql("gen_random_uuid()");
+                .HasDefaultValueSql("gen_random_uuid()")
+                .IsRequired();
 
             entity
                 .Property(e => e.UserSubAccount)
@@ -76,6 +82,16 @@ public class DataContext : DbContext
                 .Property(e => e.IsActive)
                 .HasDefaultValue(false)
                 .HasColumnName("is_active");
+
+            entity
+                .Property(e => e.IsSuma)
+                .HasDefaultValue(false)
+                .HasColumnName("is_suma");
+
+            entity
+                .Property(e => e.UseCertificate)
+                .HasDefaultValue(true)
+                .HasColumnName("use_certificate");
 
             entity
                 .Property(e => e.CreatedAt)
