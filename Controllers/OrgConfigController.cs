@@ -65,4 +65,40 @@ public class OrgConfigController : ControllerBase
 
         return Ok(config);
     }
+
+    [HttpPatch("/v1/org/configs/{configId}/activate")]
+    public async Task<ActionResult<dynamic>> Activate(Guid configId)
+    {
+        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+
+        var decodedToken = jwtToken as DecodedJwtToken;
+        var org = decodedToken?.Organizations.FirstOrDefault();
+
+        if (decodedToken is null || org is null)
+        {
+            return Unauthorized();
+        }
+
+        var activated = await _orgConfigService.ActivateById(configId);
+
+        return Ok(new { success = activated });
+    }
+
+    [HttpPatch("/v1/org/configs/{configId}/deactivate")]
+    public async Task<ActionResult<dynamic>> Deactivate(Guid configId)
+    {
+        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+
+        var decodedToken = jwtToken as DecodedJwtToken;
+        var org = decodedToken?.Organizations.FirstOrDefault();
+
+        if (decodedToken is null || org is null)
+        {
+            return Unauthorized();
+        }
+
+        var deactivated = await _orgConfigService.DeactivateById(configId);
+
+        return Ok(new { success = deactivated });
+    }
 }

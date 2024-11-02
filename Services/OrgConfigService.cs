@@ -3,6 +3,8 @@ public interface IOrgConfigService
     public Task<List<OrgConfigDTO>> GetAll(bool includeInactive);
     public Task<List<OrgConfigDTO>> GetByOrg(string org);
     public Task<OrgConfigDTO?> GetById(Guid configId);
+    public Task<bool> ActivateById(Guid configId);
+    public Task<bool> DeactivateById(Guid configId);
 }
 
 public class OrgConfigService : IOrgConfigService
@@ -12,6 +14,42 @@ public class OrgConfigService : IOrgConfigService
     public OrgConfigService(DataContext context)
     {
         _context = context;
+    }
+
+    public async Task<bool> ActivateById(Guid configId)
+    {
+        var config = await _context.OrgConfigs.FirstOrDefaultAsync(c =>
+            c.ConfigId == configId
+        );
+
+        if (config is null)
+        {
+            return false;
+        }
+
+        config.IsActive = true;
+
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<bool> DeactivateById(Guid configId)
+    {
+        var config = await _context.OrgConfigs.FirstOrDefaultAsync(c =>
+            c.ConfigId == configId
+        );
+
+        if (config is null)
+        {
+            return false;
+        }
+
+        config.IsActive = false;
+
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     public async Task<List<OrgConfigDTO>> GetAll(bool includeInactive = false)
