@@ -35,4 +35,40 @@ public class CredentialController : ControllerBase
 
         return Ok(credentials);
     }
+
+    [HttpPatch("/v1/org/credentials/{credentialId}/activate")]
+    public async Task<ActionResult<dynamic>> Activate(Guid credentialId)
+    {
+        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+
+        var decodedToken = jwtToken as DecodedJwtToken;
+        var org = decodedToken?.Organizations.FirstOrDefault();
+
+        if (decodedToken is null || org is null)
+        {
+            return Unauthorized();
+        }
+
+        var activated = await _credentialService.ActivateById(credentialId);
+
+        return Ok(new { success = activated });
+    }
+
+    [HttpPatch("/v1/org/credentials/{credentialId}/deactivate")]
+    public async Task<ActionResult<dynamic>> Deactivate(Guid credentialId)
+    {
+        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+
+        var decodedToken = jwtToken as DecodedJwtToken;
+        var org = decodedToken?.Organizations.FirstOrDefault();
+
+        if (decodedToken is null || org is null)
+        {
+            return Unauthorized();
+        }
+
+        var deactivated = await _credentialService.DeactivateById(credentialId);
+
+        return Ok(new { success = deactivated });
+    }
 }
