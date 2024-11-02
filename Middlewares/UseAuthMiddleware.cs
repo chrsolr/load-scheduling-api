@@ -64,12 +64,17 @@ public class UseAuthMiddleware
             return;
         }
 
-        foreach (var org in decodedToken.Organizations)
-        {
-            Console.WriteLine($"Organization: {org}");
-        }
-
-        // Console.WriteLine(JsonSerializer.Serialize(decodedToken));
+        // TODO: Check if the token is expired
+        // TODO: Check permissions??
+        //
+        // if (
+        //     decodedToken.ToolPolicies.Contains("loadSchedulig:reader")
+        //     || decodedToken.ToolPolicies.Contains("loadScheduling:editor")
+        // )
+        // {
+        //     return Unauthorized();
+        // }
+        context.Items["DecodedJwtToken"] = decodedToken;
 
         await _next(context);
     }

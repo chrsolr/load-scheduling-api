@@ -1,6 +1,8 @@
 public interface IOrgConfigService
 {
     public Task<List<OrgConfigDTO>> GetAll(bool includeInactive);
+    public Task<List<OrgConfigDTO>> GetByOrg(string org);
+    public Task<OrgConfigDTO?> GetById(Guid configId);
 }
 
 public class OrgConfigService : IOrgConfigService
@@ -50,5 +52,43 @@ public class OrgConfigService : IOrgConfigService
         }
 
         return await configs.ToListAsync();
+    }
+
+    public async Task<OrgConfigDTO?> GetById(Guid configId)
+    {
+        return await _context
+            .OrgConfigs.Where(c => c.ConfigId == configId)
+            .Select(c => new OrgConfigDTO
+            {
+                ConfigId = c.ConfigId,
+                Org = c.Org,
+                Market = c.Market,
+                Brand = c.Brand,
+                CreatedBy = c.CreatedBy,
+                UpdatedBy = c.UpdatedBy,
+                CreatedAt = c.CreatedAt,
+                UpdatedAt = c.UpdatedAt,
+                IsActive = c.IsActive,
+            })
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<List<OrgConfigDTO>> GetByOrg(string org)
+    {
+        return await _context
+            .OrgConfigs.Where(c => c.Org == org && c.IsActive)
+            .Select(c => new OrgConfigDTO
+            {
+                ConfigId = c.ConfigId,
+                Org = c.Org,
+                Market = c.Market,
+                Brand = c.Brand,
+                CreatedBy = c.CreatedBy,
+                UpdatedBy = c.UpdatedBy,
+                CreatedAt = c.CreatedAt,
+                UpdatedAt = c.UpdatedAt,
+                IsActive = c.IsActive,
+            })
+            .ToListAsync();
     }
 }
