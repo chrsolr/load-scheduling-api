@@ -19,17 +19,11 @@ public class ConfigController : ControllerBase
         HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
 
         var decodedToken = jwtToken as DecodedJwtToken;
-
-        if (decodedToken is null || !decodedToken.ToolPolicies.Any())
-        {
-            return Unauthorized();
-        }
-
         var org = decodedToken?.Organizations.FirstOrDefault();
 
-        if (org is null)
+        if (decodedToken is null || org is null)
         {
-            return NotFound();
+            return Unauthorized();
         }
 
         var configs = await _configService.GetByOrg(org);
