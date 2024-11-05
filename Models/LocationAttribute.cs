@@ -5,10 +5,12 @@
     nameof(Market),
     nameof(Brand),
     nameof(Zone),
+    nameof(Location),
+    nameof(Utility),
     IsUnique = true,
     Name = "location_attributes_config_id_credential_id_market_brand_zo_key"
 )]
-public partial class LocationAttribute
+public record LocationAttribute
 {
     [Key]
     [Column("location_attribute_id")]

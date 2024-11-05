@@ -70,6 +70,41 @@ namespace LoadSchedulingAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "location_attributes",
+                columns: table => new
+                {
+                    location_attribute_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    config_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    credential_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    org = table.Column<string>(type: "text", nullable: false),
+                    market = table.Column<string>(type: "text", nullable: false),
+                    brand = table.Column<string>(type: "text", nullable: false),
+                    zone = table.Column<string>(type: "text", nullable: false),
+                    utility = table.Column<string>(type: "text", nullable: false),
+                    location = table.Column<string>(type: "text", nullable: false),
+                    location_name = table.Column<string>(type: "text", nullable: false),
+                    created_by = table.Column<string>(type: "text", nullable: false, defaultValueSql: "'iw_db_default_user@innowatts.com'::text"),
+                    updated_by = table.Column<string>(type: "text", nullable: false, defaultValueSql: "'iw_db_default_user@innowatts.com'::text"),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()"),
+                    updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("location_attribute_id", x => x.location_attribute_id);
+                    table.ForeignKey(
+                        name: "location_attributes_config_id_fkey",
+                        column: x => x.config_id,
+                        principalTable: "configs",
+                        principalColumn: "config_id");
+                    table.ForeignKey(
+                        name: "location_attributes_credential_id_fkey",
+                        column: x => x.credential_id,
+                        principalTable: "credentials",
+                        principalColumn: "credential_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "configs_org_brand_market_key",
                 table: "configs",
@@ -86,11 +121,25 @@ namespace LoadSchedulingAPI.Migrations
                 name: "IX_credentials_config_id",
                 table: "credentials",
                 column: "config_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_location_attributes_credential_id",
+                table: "location_attributes",
+                column: "credential_id");
+
+            migrationBuilder.CreateIndex(
+                name: "location_attributes_config_id_credential_id_market_brand_zo_key",
+                table: "location_attributes",
+                columns: new[] { "config_id", "credential_id", "market", "brand", "zone", "location", "utility" },
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "location_attributes");
+
             migrationBuilder.DropTable(
                 name: "credentials");
 

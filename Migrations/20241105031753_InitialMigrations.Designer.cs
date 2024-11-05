@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LoadSchedulingAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20241102041332_InitialMigrations")]
+    [Migration("20241105031753_InitialMigrations")]
     partial class InitialMigrations
     {
         /// <inheritdoc />
@@ -213,6 +213,93 @@ namespace LoadSchedulingAPI.Migrations
                     b.ToTable("credentials", (string)null);
                 });
 
+            modelBuilder.Entity("LocationAttribute", b =>
+                {
+                    b.Property<Guid>("LocationAttributeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("location_attribute_id");
+
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("brand");
+
+                    b.Property<Guid>("ConfigId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("config_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasColumnName("created_by")
+                        .HasDefaultValueSql("'iw_db_default_user@innowatts.com'::text");
+
+                    b.Property<Guid>("CredentialId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("credential_id");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("location");
+
+                    b.Property<string>("LocationName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("location_name");
+
+                    b.Property<string>("Market")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("market");
+
+                    b.Property<string>("Org")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("org");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasColumnName("updated_by")
+                        .HasDefaultValueSql("'iw_db_default_user@innowatts.com'::text");
+
+                    b.Property<string>("Utility")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("utility");
+
+                    b.Property<string>("Zone")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("zone");
+
+                    b.HasKey("LocationAttributeId")
+                        .HasName("location_attribute_id");
+
+                    b.HasIndex("CredentialId");
+
+                    b.HasIndex(new[] { "ConfigId", "CredentialId", "Market", "Brand", "Zone", "Location", "Utility" }, "location_attributes_config_id_credential_id_market_brand_zo_key")
+                        .IsUnique();
+
+                    b.ToTable("location_attributes", (string)null);
+                });
+
             modelBuilder.Entity("Credential", b =>
                 {
                     b.HasOne("Config", "Config")
@@ -225,9 +312,36 @@ namespace LoadSchedulingAPI.Migrations
                     b.Navigation("Config");
                 });
 
+            modelBuilder.Entity("LocationAttribute", b =>
+                {
+                    b.HasOne("Config", "Config")
+                        .WithMany("LocationAttributes")
+                        .HasForeignKey("ConfigId")
+                        .IsRequired()
+                        .HasConstraintName("location_attributes_config_id_fkey");
+
+                    b.HasOne("Credential", "Credential")
+                        .WithMany("LocationAttributes")
+                        .HasForeignKey("CredentialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("location_attributes_credential_id_fkey");
+
+                    b.Navigation("Config");
+
+                    b.Navigation("Credential");
+                });
+
             modelBuilder.Entity("Config", b =>
                 {
                     b.Navigation("Credentials");
+
+                    b.Navigation("LocationAttributes");
+                });
+
+            modelBuilder.Entity("Credential", b =>
+                {
+                    b.Navigation("LocationAttributes");
                 });
 #pragma warning restore 612, 618
         }

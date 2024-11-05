@@ -1,8 +1,20 @@
 [ApiController]
 public class LocationAttributeController : ControllerBase
 {
+    private readonly ILogger<LocationAttributeController> _logger;
+    private readonly ILocationAttributeService _locationAttributeService;
+
+    public LocationAttributeController(
+        ILogger<LocationAttributeController> logger,
+        ILocationAttributeService locationAttributeService
+    )
+    {
+        _logger = logger;
+        _locationAttributeService = locationAttributeService;
+    }
+
     [HttpGet("/v1/org/location-attributes")]
-    public ActionResult<dynamic> GetByOrg()
+    public async Task<ActionResult<List<LocationAttributeDTO>>> GetByOrg()
     {
         HttpContext.Items.TryGetValue("DecodedJwtToken", out var token);
 
@@ -14,7 +26,13 @@ public class LocationAttributeController : ControllerBase
             return Unauthorized();
         }
 
-        // TODO: Get Location Attribute
-        return Ok("Hey");
+        var locations = await _locationAttributeService.GetByOrg(org);
+
+        if (locations is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(locations);
     }
 }

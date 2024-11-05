@@ -1,4 +1,4 @@
-public class DecodedJwtToken
+public record DecodedJwtToken
 {
     [JsonPropertyName("exp")]
     public int Exp { get; set; }
