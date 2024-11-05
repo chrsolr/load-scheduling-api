@@ -55,6 +55,5 @@ public partial class LocationAttribute
 
     public virtual Config Config { get; set; } = null!;
 
-    public virtual ICollection<Credential> Credentials { get; set; } =
-        new List<Credential>();
+    public virtual Credential Credential { get; set; } = null!;
 }

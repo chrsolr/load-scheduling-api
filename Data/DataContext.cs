@@ -161,7 +161,7 @@ public class DataContext : DbContext
                 .HasColumnName("updated_by");
 
             entity
-m               .HasOne(d => d.Config)
+                .HasOne(d => d.Config)
                 .WithMany(p => p.LocationAttributes)
                 .HasForeignKey(d => d.ConfigId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
