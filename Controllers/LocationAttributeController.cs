@@ -31,7 +31,6 @@ public class LocationAttributeController : ControllerBase
         }
 
         var locations = await _locationAttributeService.GetByOrg(organization);
-
         if (locations is null)
         {
             return NotFound();

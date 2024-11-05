@@ -31,7 +31,6 @@ public class CredentialController : ControllerBase
         }
 
         var credentials = await _credentialService.GetByOrg(organization);
-
         if (credentials is null)
         {
             return NotFound();
