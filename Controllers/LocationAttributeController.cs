@@ -35,4 +35,29 @@ public class LocationAttributeController : ControllerBase
 
         return Ok(locations);
     }
+
+
+    [HttpGet("/v1/org/location-attributes/{configId}")]
+    public async Task<ActionResult<LocationAttributeDTO>> GetByConfigId(
+        [FromRoute] Guid configId
+    )
+    {
+        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+
+        var decodedToken = jwtToken as DecodedJwtToken;
+        var org = decodedToken?.Organizations.FirstOrDefault();
+
+        if (decodedToken is null || org is null)
+        {
+            return Unauthorized();
+        }
+
+        var locations = await _locationAttributeService.GetByConfigId(configId);
+        if (locations is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(locations);
+    }
 }
