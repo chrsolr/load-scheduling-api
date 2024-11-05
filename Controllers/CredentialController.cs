@@ -16,17 +16,21 @@ public class CredentialController : ControllerBase
     [HttpGet("/v1/org/credentials")]
     public async Task<ActionResult<List<CredentialDTO>>> GetByOrg()
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
-
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
         {
             return Unauthorized();
         }
 
-        var credentials = await _credentialService.GetByOrg(org);
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
+        {
+            return Unauthorized();
+        }
+
+        var credentials = await _credentialService.GetByOrg(organization);
 
         if (credentials is null)
         {
@@ -41,12 +45,16 @@ public class CredentialController : ControllerBase
         [FromRoute] Guid configId
     )
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
+        {
+            return Unauthorized();
+        }
 
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
         {
             return Unauthorized();
         }
@@ -63,12 +71,16 @@ public class CredentialController : ControllerBase
     [HttpPatch("/v1/org/credentials/{credentialId}/activate")]
     public async Task<ActionResult<dynamic>> Activate(Guid credentialId)
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
+        {
+            return Unauthorized();
+        }
 
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
         {
             return Unauthorized();
         }
@@ -81,12 +93,16 @@ public class CredentialController : ControllerBase
     [HttpPatch("/v1/org/credentials/{credentialId}/deactivate")]
     public async Task<ActionResult<dynamic>> Deactivate(Guid credentialId)
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
+        {
+            return Unauthorized();
+        }
 
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
         {
             return Unauthorized();
         }

@@ -16,18 +16,21 @@ public class ConfigController : ControllerBase
     [HttpGet("/v1/org/configs")]
     public async Task<ActionResult<List<ConfigDTO>>> GetByOrg()
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
-
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
         {
             return Unauthorized();
         }
 
-        var configs = await _configService.GetByOrg(org);
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
+        {
+            return Unauthorized();
+        }
 
+        var configs = await _configService.GetByOrg(organization);
         if (configs is null)
         {
             return NotFound();
@@ -41,12 +44,16 @@ public class ConfigController : ControllerBase
         [FromRoute] Guid configId
     )
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
+        {
+            return Unauthorized();
+        }
 
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
         {
             return Unauthorized();
         }
@@ -63,12 +70,16 @@ public class ConfigController : ControllerBase
     [HttpPatch("/v1/org/configs/{configId}/activate")]
     public async Task<ActionResult<dynamic>> Activate(Guid configId)
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
+        {
+            return Unauthorized();
+        }
 
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
         {
             return Unauthorized();
         }
@@ -81,12 +92,16 @@ public class ConfigController : ControllerBase
     [HttpPatch("/v1/org/configs/{configId}/deactivate")]
     public async Task<ActionResult<dynamic>> Deactivate(Guid configId)
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
+        {
+            return Unauthorized();
+        }
 
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
         {
             return Unauthorized();
         }

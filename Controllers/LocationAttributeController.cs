@@ -16,17 +16,21 @@ public class LocationAttributeController : ControllerBase
     [HttpGet("/v1/org/location-attributes")]
     public async Task<ActionResult<List<LocationAttributeDTO>>> GetByOrg()
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var token);
-
-        var decodedToken = token as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
         {
             return Unauthorized();
         }
 
-        var locations = await _locationAttributeService.GetByOrg(org);
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
+        {
+            return Unauthorized();
+        }
+
+        var locations = await _locationAttributeService.GetByOrg(organization);
 
         if (locations is null)
         {
@@ -36,18 +40,21 @@ public class LocationAttributeController : ControllerBase
         return Ok(locations);
     }
 
-
     [HttpGet("/v1/org/location-attributes/{configId}")]
     public async Task<ActionResult<LocationAttributeDTO>> GetByConfigId(
         [FromRoute] Guid configId
     )
     {
-        HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken);
+        if (
+            !HttpContext.Items.TryGetValue("DecodedJwtToken", out var jwtToken)
+            || jwtToken is not DecodedJwtToken decodedToken
+        )
+        {
+            return Unauthorized();
+        }
 
-        var decodedToken = jwtToken as DecodedJwtToken;
-        var org = decodedToken?.Organizations.FirstOrDefault();
-
-        if (decodedToken is null || org is null)
+        var organization = decodedToken.Organizations.FirstOrDefault();
+        if (organization is null)
         {
             return Unauthorized();
         }
