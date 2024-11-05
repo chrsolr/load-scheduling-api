@@ -1,22 +1,24 @@
 [Table("credentials")]
 [Index(
-    nameof(Org),
-    nameof(Brand),
+    nameof(ConfigId),
+    nameof(CredentialId),
     nameof(Market),
+    nameof(Brand),
     nameof(Zone),
-    nameof(Location),
-    nameof(UserSubAccount),
     IsUnique = true,
-    Name = "credentials_org_brand_market_zone_location_user_sub_account_key"
+    Name = "location_attributes_config_id_credential_id_market_brand_zo_key"
 )]
-public record Credential
+public partial class LocationAttribute
 {
     [Key]
-    [Column("credential_id")]
-    public Guid CredentialId { get; set; }
+    [Column("location_attribute_id")]
+    public Guid LocationAttributeId { get; set; }
 
     [ForeignKey("config_id")]
     public Guid ConfigId { get; set; }
+
+    [ForeignKey("credential_id")]
+    public Guid CredentialId { get; set; }
 
     [Column("org")]
     public string Org { get; set; } = null!;
@@ -30,38 +32,14 @@ public record Credential
     [Column("zone")]
     public string Zone { get; set; } = null!;
 
+    [Column("utility")]
+    public string Utility { get; set; } = null!;
+
     [Column("location")]
     public string Location { get; set; } = null!;
 
     [Column("location_name")]
     public string LocationName { get; set; } = null!;
-
-    [Column("user_id")]
-    public string? UserId { get; set; }
-
-    [Column("user_account")]
-    public string? UserAccount { get; set; }
-
-    [Column("user_password")]
-    public string? UserPassword { get; set; }
-
-    [Column("user_sub_account")]
-    public string UserSubAccount { get; set; } = null!;
-
-    [Column("pfx")]
-    public string? Pfx { get; set; }
-
-    [Column("pfx_passphrase")]
-    public string? PfxPassphrase { get; set; }
-
-    [Column("is_active")]
-    public bool IsActive { get; set; }
-
-    [Column("is_suma")]
-    public bool IsSuma { get; set; }
-
-    [Column("use_certificate")]
-    public bool UseCertificate { get; set; }
 
     [Column("created_by")]
     public string CreatedBy { get; set; } = "iw_db_default_user@innowatts.com";
@@ -77,6 +55,6 @@ public record Credential
 
     public virtual Config Config { get; set; } = null!;
 
-    public virtual ICollection<LocationAttribute> LocationAttributes { get; set; } =
-        new List<LocationAttribute>();
+    public virtual ICollection<Credential> Credentials { get; set; } =
+        new List<Credential>();
 }

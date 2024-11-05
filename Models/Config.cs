@@ -41,4 +41,7 @@ public record Config
 
     public virtual ICollection<Credential> Credentials { get; set; } =
         new List<Credential>();
+
+    public virtual ICollection<LocationAttribute> LocationAttributes { get; set; } =
+        new List<LocationAttribute>();
 }
