@@ -1,4 +1,4 @@
-class DotEnv
+public class DotEnv
 {
     public static void Load(string filepath = ".env")
     {
