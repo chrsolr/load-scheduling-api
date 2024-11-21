@@ -1,6 +1,12 @@
+public class DstDates
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+}
+
 public class DateUtils()
 {
-    public static dynamic GetDaylightSavingTimeDates(string timezone)
+    public static DstDates GetDaylightSavingTimeDates(string timezone)
     {
         TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(timezone);
 
@@ -30,6 +36,6 @@ public class DateUtils()
             }
         }
 
-        return new { startDate, endDate };
+        return new DstDates { StartDate = startDate, EndDate = endDate };
     }
 }
