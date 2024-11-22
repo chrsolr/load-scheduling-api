@@ -30,35 +30,42 @@ public class DayAheadSubmissionController : ControllerBase
         // - Split by Location, Date
         // - Implement DST logic
 
-        var demandBids = body
+
+        var groupedByLocation = body
             .DemandBids.GroupBy(v => v.Location)
-            .SelectMany(v =>
-                v.Select(x => new DemandBidSubmitRequest
+            .Select(v => new { Key = v.Key, Items = v });
+
+        var model = groupedByLocation
+            .Select(v => new Envelope
+            {
+                Body = new Body
                 {
-                    Location = x.Location,
-                    Day = x.Date,
-                    DemandBidHourlyList = x
-                        .Intervals.Select(y => new DemandBidHourly
-                        {
-                            Hour = y.Interval ?? 0,
-                            FixedDemand = y.Load ?? 0,
-                            IsDuplicateHour = false,
-                        })
-                        .ToList(),
-                })
-            )
+                    SubmitRequest = new SubmitRequest
+                    {
+                        DemandBids = v
+                            .Items.Select(v => new DemandBidSubmitRequest
+                            {
+                                Location = v.Location,
+                                Day = v.Date,
+                                DemandBidHourlyList = v
+                                    .Intervals.Select(y => new DemandBidHourly
+                                    {
+                                        Hour = y.Interval ?? 0,
+                                        FixedDemand = y.Load ?? 0,
+                                        IsDuplicateHour = false,
+                                    })
+                                    .ToList(),
+                            })
+                            .ToList(),
+                    },
+                },
+            })
             .ToList();
 
-        var convertedXmlString = new Envelope
-        {
-            Body = new Body
-            {
-                SubmitRequest = new SubmitRequest { DemandBids = demandBids },
-            },
-        };
+        string xml = XmlConverter.ObjectToXmlString(model);
 
-        string xml = XmlConverter.ObjectToXmlString(convertedXmlString);
-
-        return Ok(xml);
+        return Ok(
+            model.Select(v => XmlConverter.ObjectToXmlString(v)).ToList()
+        );
     }
 }
